@@ -27,9 +27,9 @@ una mercancia con el mismo nombre, y si no existe el usuario con el que se regis
 
 ![](imagenes/Basesdedatospostgreslocal.jpg)
 
-![](imagenes/mercanciadetalle.jpg)
+![](imagenes/mercanciadetalles.jpg)
 
-![](imagenes/usuariodetalle.jpg)
+![](imagenes/usuariodetalles.jpg)
 
 ----------------------------------------------
 ### Script Usado
