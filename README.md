@@ -1,46 +1,86 @@
-usage: git [--version] [--help] [-C <path>] [-c <name>=<value>]
-           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]
-           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--bare]
-           [--git-dir=<path>] [--work-tree=<path>] [--namespace=<name>]
-           [--super-prefix=<path>] [--config-env=<name>=<envvar>]
-           <command> [<args>]
+## Descripcion general del problema:
+Siste,a de inventario para el sector automotriz donde se contole la mercancia que ingresa
+y la que sale. El sistema debe permitir ergistrar nueva mercancia, editar y eliminar. 
+Para registrar mercancia nueva se requiere tener en cuenta los siguientes datos:
+Nombre producto, cantidad, fecha de ingreso, usuario que realiza registro, Restricciones:
+no puede haber mas de una mercancia con el mismo nombre, la cantidad debe ser un numero entero,
+la fecha de ingreso debe ser menor o iguall a la fecha actual.
+Para editar mercancia debe tener las mismas condiciones de cuando se resgistra una nueva, aparte 
+hay que registrar el usuario que hace la modificacion y la fecha.
+Para eliminar mercancia, solo lo puede hacer el usuario que la registro -
+Eñ soste,a tambien dene permitir mostrar por paantalla la mercancia registrada, los filtros de 
+busqueda pueden ser por fechaa, usuario y/o nombre (se debe buscar minimo por un filtro).
+Los usuarios que puedan ejectura las acciones deben estar registrrados con su nombre, edad, cargo,
+y fecha de ingreso a la compañia.
+Los posibles cargos son, Asesor de ventas, administrador y soporte, con la posibilidad de que se 
+creen nuevos cargos a futuro.
+Nota: no es necesario contar con un login para saber que usuario esta realizando las acciones en,
+cada accion se puede elegir el usuario(previamente creaod en BD) en un menu desplegable.
 
-These are common Git commands used in various situations:
+----------------------------------------
+### Base de datos.
+---------------------------------------------
 
-start a working area (see also: git help tutorial)
-   clone             Clone a repository into a new directory
-   init              Create an empty Git repository or reinitialize an existing one
+Se puede observar a continuacion el diagrama de clases de la base de datos con un suario y mercancia, donde no puede existir
+una mercancia con el mismo nombre, y si no existe el usuario con el que se registrara la mercancia no se podra generar.
 
-work on the current change (see also: git help everyday)
-   add               Add file contents to the index
-   mv                Move or rename a file, a directory, or a symlink
-   restore           Restore working tree files
-   rm                Remove files from the working tree and from the index
-   sparse-checkout   Initialize and modify the sparse-checkout
 
-examine the history and state (see also: git help revisions)
-   bisect            Use binary search to find the commit that introduced a bug
-   diff              Show changes between commits, commit and working tree, etc
-   grep              Print lines matching a pattern
-   log               Show commit logs
-   show              Show various types of objects
-   status            Show the working tree status
+![](imagenes/Basesdedatospostgreslocal.jpg)
 
-grow, mark and tweak your common history
-   branch            List, create, or delete branches
-   commit            Record changes to the repository
-   merge             Join two or more development histories together
-   rebase            Reapply commits on top of another base tip
-   reset             Reset current HEAD to the specified state
-   switch            Switch branches
-   tag               Create, list, delete or verify a tag object signed with GPG
+![](imagenes/mercanciadetalle.jpg)
 
-collaborate (see also: git help workflows)
-   fetch             Download objects and refs from another repository
-   pull              Fetch from and integrate with another repository or a local branch
-   push              Update remote refs along with associated objects
+![](imagenes/usuariodetalle.jpg)
 
-'git help -a' and 'git help -g' list available subcommands and some
-concept guides. See 'git help <command>' or 'git help <concept>'
-to read about a specific subcommand or concept.
-See 'git help git' for an overview of the system.
+----------------------------------------------
+### Script Usado
+
+CREATE TABLE mercancia ( 
+id serial not null,
+nombremercancia VARCHAR(100) NOT NULL,
+cantidad int NOT null,
+fechaIngreso date not null,
+usuarioresgistra VARCHAR(100) not null,
+PRIMARY KEY (id)
+);
+
+
+CREATE TABLE usuario (   
+id serial not null ,
+nombre VARCHAR(100) NOT NULL,
+cargo VARCHAR(100) NOT null,
+fechaIngreso date not null,
+edad int not null,
+PRIMARY KEY (id)
+);
+
+------UNICAS-----
+
+ALTER TABLE mercancia ADD CONSTRAINT UK_mercancia UNIQUE (nombremercancia);
+alter table usuario add constraint UK_usuario unique(nombre);
+
+------FORANEAS---
+
+ALTER TABLE mercancia ADD CONSTRAINT FK_usuario FOREIGN KEY (usuarioresgistra) REFERENCES usuario(nombre);
+
+------POBLAR-----
+
+insert into usuario (id,nombre,cargo,fechaingreso,edad)values(1,'Carlos Moya','ADMIN',current_date,22);
+insert into usuario (id,nombre,cargo,fechaingreso,edad)values(2,'Rafale Nadal','ADMIN',current_date,36);
+insert into usuario (id,nombre,cargo,fechaingreso,edad)values(3,'Carlos Alcaraz','ADMIN',current_date,19);
+insert into usuario (id,nombre,cargo,fechaingreso,edad)values(4,'Milena Parra','ADMIN',current_date,44);
+
+insert into mercancia (id,nombremercancia,cantidad,fechaingreso,usuarioresgistra)values(2,'Refirgerante Motos',14,current_date,'Carlos Moya');
+insert into mercancia (id,nombremercancia,cantidad,fechaingreso,usuarioresgistra)values(3,'Aceite 10/40 wt',50,current_date,'Rafale Nadal');
+insert into mercancia (id,nombremercancia,cantidad,fechaingreso,usuarioresgistra)values(4,'Parachoques frontal DS3',1,current_date,'Carlos Alcaraz');
+insert into mercancia (id,nombremercancia,cantidad,fechaingreso,usuarioresgistra)values(5,'Lamina polarisar ventanas',100,current_date,'Milena Parra');
+
+------------------------------------------------------
+
+## Test Postman
+
+El primero que veremos sera, crear usuario ya que si no existe este no podra registrarse nada en la base de datos con ralacion a mercancia
+
+![](imagenes/getUsersPostman.jpg)
+
+
+
