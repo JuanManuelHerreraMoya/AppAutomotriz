@@ -28,7 +28,7 @@ public class Usuario implements Serializable {
     private String cargo;
 
     @Column(name = "fechaingreso")
-    private Date fechaIngreso;
+    private Date fechaingreso;
 
     @Column(name = "edad")
     private Integer edad;

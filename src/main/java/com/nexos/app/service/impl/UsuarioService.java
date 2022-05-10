@@ -31,5 +31,4 @@ public class UsuarioService implements IUsuarioService {
             throw new Exception("Error finding all Users");
         }
     }
-
 }

@@ -43,13 +43,11 @@ public class MercanciaService implements IMercanciaService {
     @Override
     public void editMercancia(Mercancia mercancia) throws Exception {
         Mercancia mercanciaOld = iMercanciaRepo.getBynombremercancia(mercancia.getNombremercancia());
-        Usuario usuario = iUsuarioRepo.getByNombre(mercancia.getUsuarioresgistra());
-        Date fechaActual = new Date();
-        if ((!mercanciaOld.equals(null)) & (!mercancia.getUsuarioresgistra().equals(usuario.getNombre()))){
+        if ((mercanciaOld==null)){
             throw new Exception("Error trying to edit merchandaise");
         }else{
             mercanciaOld.setCantidad(mercancia.getCantidad());
-            mercanciaOld.setFechaIngreso(fechaActual);
+            mercanciaOld.setFechaIngreso(new Date());
             iMercanciaRepo.save(mercanciaOld);
         }
     }

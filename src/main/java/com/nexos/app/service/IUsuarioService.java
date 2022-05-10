@@ -7,6 +7,7 @@ import java.util.List;
 public interface IUsuarioService {
 
     void addUser(Usuario usuario) throws  Exception;
+
     List<Usuario> getAllUsuarios() throws  Exception;
 
 }

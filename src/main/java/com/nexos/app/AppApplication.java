@@ -1,5 +1,6 @@
 package com.nexos.app;
 
+import com.nexos.app.controller.InventarioAPIController;
 import org.springframework.boot.SpringApplication;
 
 
@@ -13,7 +14,6 @@ import javax.persistence.Entity;
 		"com.nexos.app.service"})
 @EnableJpaRepositories("com.nexos.app.repository")
 @EntityScan("com.nexos.app.model")
-
 public class AppApplication {
 
 	public static void main(String[] args) {
